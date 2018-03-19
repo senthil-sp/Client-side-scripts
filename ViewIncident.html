@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/angular.min.js"></script>
+    <style>
+    input{
+        color: black !important;
+    }
+    </style>
+</head>
+<body>
+<h2>Incident Details</h2>
+<div>
+    <div>
+        <div class="form-group row" ">
+            <div class="form-horizontal" role="form" name="incidentform" novalidate>
+
+                <div class="form-group">
+                    <label for="reportNo" class="col-sm-4 control-label">Report No</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="ReportNo" type="text" id="reportNo" disabled/>
+                    </div>
+                </div>
+                <!--Incident Title -->
+                <div class="form-group">
+                    <label for="incidentTitle" class="col-sm-4 control-label">Incident Title</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="Incident Title" type="text" id="incidentTitle" disabled/>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label for="dateofincident" class="col-sm-4 control-label">Date of Incident</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="dateofIncident" type="text" id="dateofIncident" disabled/>
+                    </div>
+                </div>
+                <div class="form-group" >
+                        <label for="dateReportedtoClient" class="col-sm-4 control-label">Date Reported to Client(if any)</label>
+                        <div class='col-sm-4'>
+                            <input type="text" class="form-control" name="dateReportedtoClient" type="text" id="dateReportedtoClient" disabled/>
+                        </div>
+                    </div>
+                <div class="form-group">
+                    <label for="datereportedtoERM" class="col-sm-4 control-label" style="text-align:right">Date Reported to ERM</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="datereportedtoERM" type="text" id="datereportedtoERM" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="actualDateofClosure" class="col-sm-4 control-label" style="text-align:right">Actual date of Closure</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="actualDateofClosure" type="text" id="actualDateofClosure" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="BusinessImpact" class="col-sm-4 control-label" style="text-align:right">Business Impact/Severity</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="BusinessImpact" type="text" id="BusinessImpact" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Region" class="col-sm-4 control-label" style="text-align:right">Region</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="Region" type="text" id="Region" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Country" class="col-sm-4 control-label" style="text-align:right">Country</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="Country" type="text" id="Country" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="City" class="col-sm-4 control-label" style="text-align:right">City</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="City" type="text" id="City" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Location" class="col-sm-4 control-label" style="text-align:right">Site/Location</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="Location" type="text" id="Location" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="caseStatus" class="col-sm-4 control-label" style="text-align:right">Case Status</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="caseStatus" type="text" id="caseStatus" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="clientName" class="col-sm-4 control-label" style="text-align:right">Client Name / WLT Office Name</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="clientName" type="text" id="clientName" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="correctiveActions" class="col-sm-4 control-label" style="text-align:right">Corrective Actions with Deadlines and action Owner</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="correctiveActions" type="text" id="correctiveActions" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="dateReportedtoRegulator" class="col-sm-4 control-label" style="text-align:right">Date Reported to Regulator (if any)</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="dateReportedtoRegulator" type="text" id="dateReportedtoRegulator" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="employeeComments" class="col-sm-4 control-label" style="text-align:right">Employee Comments</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="employeeComments" type="text" id="employeeComments" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ERMContact" class="col-sm-4 control-label" style="text-align:right">ERM Contact</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="ERMContact" type="text" id="ERMContact" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="incidentType" class="col-sm-4 control-label" style="text-align:right">Incident Type</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="incidentType" type="text" id="incidentType" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="incidentUpheld" class="col-sm-4 control-label" style="text-align:right">Incident Upheld</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="incidentUpheld" type="text" id="incidentUpheld" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="incomingReportMethod" class="col-sm-4 control-label" style="text-align:right">Incoming Report Method</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="incomingReportMethod" type="text" id="incomingReportMethod" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="keyBusinessContact" class="col-sm-4 control-label" style="text-align:right">Key Business Contact</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="keyBusinessContact" type="text" id="keyBusinessContact" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loggedBy" class="col-sm-4 control-label" style="text-align:right">Logged By</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="loggedBy" type="text" id="loggedBy" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="NAVEXReportable" class="col-sm-4 control-label" style="text-align:right">NAVEX / WLT Reportable</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="NAVEXReportable" type="text" id="NAVEXReportable" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reportIssued" class="col-sm-4 control-label" style="text-align:right">Report Issued</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="reportIssued" type="text" id="reportIssued" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="targetdateofclosure" class="col-sm-4 control-label" style="text-align:right">Target date of closure</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="targetdateofclosure" type="text" id="targetdateofclosure" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="valueIncurred" class="col-sm-4 control-label" style="text-align:right">Value Incurred to date</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="valueIncurred" type="text" id="valueIncurred" disabled/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Sector" class="col-sm-4 control-label" style="text-align:right">Sector</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="Sector" type="text" id="Sector" disabled/>
+                    </div>
+                </div>
+            </div>
+        </div>      
+    </div>
+</div>
+
+<script>
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function GetParameterValues(param) {  
+        var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');  
+        for (var i = 0; i < url.length; i++) {  
+            var urlparam = url[i].split('=');  
+            if (urlparam[0] == param) {  
+                return urlparam[1];  
+            }  
+        }  
+    }
+    function dateFormatter(param){
+        var date=new Date(param);
+        var month=date.getMonth();
+        var newDate=date.getDate() + "-" +months[month] + "-" +  date.getFullYear();
+        return newDate;
+    }
+    $(document).ready(function(){
+        var tid = GetParameterValues('reportno');
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        debugger;
+        $.ajax({
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('IncidentTool')/items('" + tid + "')",
+            method: "GET",
+            headers: { "Accept": "application/json; odata=verbose" },
+            success: function (data) {         
+                $("#reportNo").val(data.d.Report_x0020_No_x002e_);
+                $("#incidentTitle").val(data.d.Title);
+                $("#dateofIncident").val(dateFormatter(data.d.Date_x0020_of_x0020_Incident));
+                $("#dateReportedtoClient").val(dateFormatter(data.d.Date_x0020_Reported_x0020_to_x00));
+                $("#datereportedtoERM").val(dateFormatter(data.d.Date_x0020_Reported_x0020_to_x000));
+                $("#actualDateofClosure").val(dateFormatter(data.d.Actual_x0020_Date_x0020_of_x0020));
+                $("#BusinessImpact").val(data.d.Business_x0020_Impact_x002F_Seve);
+                $("#Region").val(data.d.WLTRegion);
+                $("#Country").val(data.d.Country);
+                $("#City").val(data.d.City);
+                $("#Location").val(data.d.Site_x002F_Location);
+                $("#caseStatus").val(data.d.Case_x0020_Status);
+                $("#clientName").val(data.d.Client_x0020_Name_x0020__x002F__);
+                $("#correctiveActions").val(data.d.Corrective_x0020_Actions_x0020_w);
+                $("#dateReportedtoRegulator").val(dateFormatter(data.d.Date_x0020_Reported_x0020_to_x001));
+                $("#employeeComments").val(data.d.Employee_x0020_Comments);
+                $("#ERMContact").val(data.d.Contact);
+                $("#incidentType").val(data.d.Incident_x0020_Type);
+                $("#incidentUpheld").val(data.d.Incident_x0020_Upheld);
+                $("#incomingReportMethod").val(data.d.Incoming_x0020_Report_x0020_Meth);
+                $("#keyBusinessContact").val(data.d.Key_x0020_Business_x0020_Contact);
+                $("#loggedBy").val(data.d.Logged_x0020_By);
+                $("#NAVEXReportable").val(data.d.NAVEX_x0020__x002F__x0020_WLT_x0);
+                $("#reportIssued").val(data.d.Report_x0020_Issued);
+                $("#targetdateofclosure").val(dateFormatter(data.d.Target_x0020_Date_x0020_of_x0020));
+                $("#valueIncurred").val(data.d.Value_x0020_Incurred_x0020_to_x0);
+                $("#Sector").val(data.d.WLTSector);
+
+                            
+            },
+            error: function (error) {
+                alert("Error: "+ JSON.stringify(error));
+            }
+        });
+    });
+</script>
+</body>
+</html>

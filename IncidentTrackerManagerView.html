@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/jquery-3.2.1.min.js"></script>  
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">  
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.jqueryui.min.css">  
+    
+    <!--script src="https://cdn.datatables.net/1.10.16/js/dataTables.jqueryui.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.jqueryui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.jqueryui.min.css"><!--//jQuery UI Reference-->
+
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.print.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.colVis.min.js"></script>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.bootstrap.min.css">
+    
+    
+    <style>
+        #table_id_filter{
+            float: left;
+            position: fixed !important;
+            top: 185px !important;
+            right: 30px;
+            padding: 15px;
+            border-radius: 10px !important;
+        }
+    </style>
+</head>
+<body>
+    <table id="table_id" class="table table-striped table-bordered" cellspacing="0" width="100%" height="100%">  
+        <thead>  
+            <tr>  
+            <th>Report No:</th>  
+            <th>Incident Title</th>  
+            <th>Date of Incident</th>  
+            <th>Date Reported to Client(if any)</th>
+            <th>Date Reported to ERM</th>
+            <th>Actual date of Closure</th>
+            <th>Business Impact/Severity</th>
+            <th>Region</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Site/Location</th>
+            <th>Case Status</th>
+            <th>Client Name / WLT Office Name</th>
+            <th>Corrective Actions with Deadlines and action Owner</th>
+            <th>Date Reported to Regulator (if any)</th>
+            <th>Employee Comments</th>
+            <th>ERM Contact</th>
+            <th>Incident Type</th>
+            <th>Incident Upheld</th>
+            <th>Incoming Report Method</th>
+            <th>Key Business Contact</th>
+            <th>Logged By</th>
+            <th>NAVEX / WLT Reportable</th>
+            <th>Report Issued</th>
+            <th>Target date of closure</th>
+            <th>Value Incurred to date</th>
+            <th>Sector</th>
+            <th>View</th>  
+            <th>Edit</th> 
+            </tr>  
+        </thead> 
+    </table>
+    <script>
+        $(document).ready(function() {
+            loadItems();
+            $(window).scroll(function () {
+                if ($(this).scrollTop() != 0) {
+                    $('#table_id_filter').fadeOut();
+                } 
+                else {
+                    $('#table_id_filter').fadeIn();
+                }
+            }); 
+
+        }); 
+        function loadItems() {  
+            var siteUrl = _spPageContextInfo.webAbsoluteUrl;  
+            var oDataUrl = siteUrl + "/_api/web/lists/getbytitle('IncidentTool')/items";  
+            $.ajax({  
+                url: oDataUrl,  
+                type: "GET",  
+                dataType: "json",  
+                headers: {  
+                    "accept": "application/json;odata=verbose"  
+                },  
+                success: mySuccHandler,  
+                error: myErrHandler  
+            });  
+        }  
+  
+        function mySuccHandler(data) {  
+            try {  
+                var dataTableExample = $('#table_id').DataTable();  
+                if (dataTableExample != 'undefined') {  
+                    dataTableExample.destroy();  
+                } 
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                
+                dataTableExample= $('#table_id').DataTable({  
+                    
+                    lengthChange: false,
+                    buttons: [ 'copy', 'excel', 'pdf', 'colvis' ], 
+                    "aaData": data.d.results,  
+                    "aoColumns": [{  
+                        "mData": "Report_x0020_No_x002e_"  
+                    }, {  
+                        "mData": "Title"  
+                    }, {  
+                        "mData": "Date_x0020_of_x0020_Incident",
+                        "render": function(mData) {  
+                            var date = new Date(mData);  
+                            var month = date.getMonth();
+                            return date.getDate() + "-" +months[month] + "-" +  date.getFullYear(); 
+                        }  
+                    }, {  
+                        "mData": "Date_x0020_Reported_x0020_to_x00",
+                        "render": function(mData) {  
+                            var date = new Date(mData);  
+                            var month = date.getMonth();
+                            return date.getDate() + "-" +months[month] + "-" +  date.getFullYear(); 
+                        }  
+                    },{  
+                        "mData": "Date_x0020_Reported_x0020_to_x000",
+                        "render": function(mData) {  
+                            var date = new Date(mData);  
+                            var month = date.getMonth();
+                            return date.getDate() + "-" +months[month] + "-" +  date.getFullYear(); 
+                        }  
+                    },{  
+                        "mData": "Actual_x0020_Date_x0020_of_x0020",
+                        "render": function(mData) {  
+                            var date = new Date(mData);  
+                            var month = date.getMonth();
+                            return date.getDate() + "-" +months[month] + "-" +  date.getFullYear(); 
+                        }  
+                    },{  
+                        "mData": "Business_x0020_Impact_x002F_Seve"  
+                    },{  
+                        "mData": "WLTRegion"  
+                    },{  
+                        "mData": "Country"  
+                    },{  
+                        "mData": "City"  
+                    },{  
+                        "mData": "Site_x002F_Location"  
+                    },{  
+                        "mData": "Case_x0020_Status"  
+                    },{  
+                        "mData": "Client_x0020_Name_x0020__x002F__"  
+                    },{  
+                        "mData": "Corrective_x0020_Actions_x0020_w"  
+                    },{  
+                        "mData": "Date_x0020_Reported_x0020_to_x001",
+                        "render": function(mData) {  
+                            var date = new Date(mData);  
+                            var month = date.getMonth();
+                            return date.getDate() + "-" +months[month] + "-" +  date.getFullYear(); 
+                        }  
+                    },{  
+                        "mData": "Employee_x0020_Comments"  
+                    },{  
+                        "mData": "Contact"  
+                    },{  
+                        "mData": "Incident_x0020_Type"  
+                    },{  
+                        "mData": "Incident_x0020_Upheld"  
+                    },{  
+                        "mData": "Incoming_x0020_Report_x0020_Meth"  
+                    },{  
+                        "mData": "Key_x0020_Business_x0020_Contact"  
+                    },{  
+                        "mData": "Logged_x0020_By"  
+                    },{  
+                        "mData": "NAVEX_x0020__x002F__x0020_WLT_x0"  
+                    },{  
+                        "mData": "Report_x0020_Issued"  
+                    },{  
+                        "mData": "Target_x0020_Date_x0020_of_x0020",
+                        "render": function(mData) {  
+                            var date = new Date(mData);  
+                            var month = date.getMonth();
+                            return date.getDate() + "-" +months[month] + "-" +  date.getFullYear(); 
+                        }  
+                    },{  
+                        "mData": "Value_x0020_Incurred_x0020_to_x0"  
+                    },{
+                        "mData": "WLTSector"
+                    },{
+                        "mData":"ID",
+                        "render": function(mData,type,row, meta) {  
+                            var value = new Object(mData);
+                            return '<a href="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SitePages/ViewIncident.aspx?reportno=' + value +'" class="btn btn-info" role="button"><span class="glyphicon glyphicon-file"></span></a>'; 
+                                                         
+                        }
+                    },{ 
+                        "mData": "ID" ,                 
+                        "render": function(mData,type,row, meta) {  
+                            var value = new Object(mData);
+                            return '<a href="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SitePages/NewIncidentForm.aspx?reportno=' + value +'" class="btn btn-info" role="button"><span class="glyphicon glyphicon-pencil"></span></a>'; 
+                                                         
+                        }           
+                    }]  
+                });
+                //dataTableExample.buttons().container().insertBefore( '#table_id_filter' ); ----jQuery code----
+                dataTableExample.buttons().container().appendTo( '#table_id_wrapper .col-sm-6:eq(0)' );
+                
+            } catch (e) {  
+                alert(e.message);  
+            }  
+        }  
+  
+        function myErrHandler(data, errCode, errMessage) {  
+            alert("Error: " + errMessage);  
+        }  
+    </script>
+</body>
+</html>

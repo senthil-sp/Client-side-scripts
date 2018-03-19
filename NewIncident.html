@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="/_layouts/15/SP.Runtime.js"></script>
+<script src="/_layouts/15/SP.js"></script>
+<script src="/_layouts/15/SP.UI.Controls.js"></script>
+<script src="/_layouts/15/1033/strings.js"></script>
+<script src="/_layouts/15/clienttemplates.js"></script>
+<script src="/_layouts/15/clientforms.js"></script>
+<script src="/_layouts/15/clientpeoplepicker.js"></script>
+<script src="/_layouts/15/autofill.js"></script>
+<script src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/jquery-3.2.1.min.js"></script>
+<!--script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.min.css" />
+<link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+<script src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/angular.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/incidentform.css">
+<script src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/bootstrap/JS/sppeoplepicker.min.js"></script>
+<script src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/bootstrap/JS/sp-peoplepicker.js"></script>
+<script src="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/bootstrap/JS/datepickerformat.js"></script>
+<link href="http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SiteAssets/bootstrap/CSS/sp-peoplepicker.css" rel="stylesheet" type="text/css">
+<script>
+    var app = angular.module('testApp', ['sp-peoplepicker']);
+    app.controller('mainController', function ($scope, $http) {
+        $scope.values = [];
+        $scope.valuesCountry = [];
+        var vm = $scope;
+        vm.people = [];
+        var output="";
+        vm.clear = function () { vm.people = []; };
+    
+        $scope.customer = { nameofregulator: "" , IncidentSummary: "" , EmployeeComments: "" , ClientNameWLTOfficeName: "" , KeyBusinessContact: "" , ValueIncurredtoDate: "" , CorrectiveActions: "" };
+        $http({
+            method: 'GET',
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionLookUp')/items?$select=Region",
+            headers:
+            {
+                "Accept": "application/json;odata=verbose",
+                "Content-Type": "application/json;odata=verbose",
+                "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                "IF-MATCH": "*",
+                "X-HTTP-Method": null
+            }
+        }).then(function success(data, status) {
+            $scope.values = data.data.d.results;
+            var d = $scope.values;
+            $scope.values = [];
+            $.each(d, function (i, item) {
+                if (!d[item.Region]) {
+                    d[item.Region] = true;
+                    $scope.values.push(item);
+                    
+                }
+            });
+            }, function failure(data, status) {
+                $("#error").empty().text(data.responseJSON.error);
+            }
+        );
+        var userid = _spPageContextInfo.userId;
+        $scope.generateNo=function(event)
+        {
+            var inputValues=[];
+                inputValues[0]=$('#region').find(':selected').text();
+                inputValues[1]=$('#country').find(':selected').text();
+                inputValues[2]=$('#city').find(':selected').text();
+                inputValues[3]=$('#ClientNameWLTOfficeName').val();
+                debugger;
+                $http({
+                    method:'GET',
+                    async:false,
+                    url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionShortNames')/items?$select=ShortName&$filter=FullName eq '"+inputValues[0]+"'",  
+                    headers:  
+                    {  
+                        "Accept": "application/json;odata=verbose",  
+                        "Content-Type": "application/json;odata=verbose",  
+                        "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                        "IF-MATCH": "*",  
+                        "X-HTTP-Method": null  
+                    }
+                }).then(function success(response){
+                    output=output+response.data.d.results[0].ShortName;
+                    console.log(output);
+                    $http({
+                        method:'GET',
+                        async:false,
+                        url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionShortNames')/items?$select=ShortName&$filter=FullName eq '"+inputValues[1]+"'",  
+                        headers:  
+                        {  
+                            "Accept": "application/json;odata=verbose",  
+                            "Content-Type": "application/json;odata=verbose",  
+                            "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                            "IF-MATCH": "*",  
+                            "X-HTTP-Method": null  
+                        }
+                        }).then(function success(response){
+                            
+                            output=output+response.data.d.results[0].ShortName;
+                            console.log(output);
+                            $http({
+                                method:'GET',
+                                async:false,
+                                url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionShortNames')/items?$select=ShortName&$filter=FullName eq '"+inputValues[2]+"'",  
+                                headers:  
+                                {  
+                                    "Accept": "application/json;odata=verbose",  
+                                    "Content-Type": "application/json;odata=verbose",  
+                                    "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                                    "IF-MATCH": "*",  
+                                    "X-HTTP-Method": null  
+                                }
+                            }).then(function success(response){
+                                
+                                output=output+response.data.d.results[0].ShortName;
+                                console.log(output);
+                                $http({
+                                    method:'GET',
+                                    async:false,
+                                    url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('ClientLookup')/items?$select=ShortName&$filter=ClientName eq '"+inputValues[3]+"'",
+                                    headers:  
+                                    {  
+                                        "Accept": "application/json;odata=verbose",  
+                                        "Content-Type": "application/json;odata=verbose",  
+                                        "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                                        "IF-MATCH": "*",  
+                                        "X-HTTP-Method": null  
+                                    }
+                                }).then(function success(response){
+                                    output=output+response.data.d.results[0].ShortName;
+                                    
+                                    console.log(output);
+                                    
+                                    if(event=='save')
+                                    {
+                                        onCreateContactExecute(output);
+
+                                    }
+
+
+
+                                    },function failure(response)  
+                                    {  
+                                        $("#error").empty().text(response.data.responseJSON.error);    
+                                    }
+                                );
+                                },function failure(response)  
+                                {  
+                                    $("#error").empty().text(response.data.responseJSON.error);    
+                                }
+                            );
+                        
+                        },function failure(response)  
+                        {  
+                            $("#error").empty().text(response.data.responseJSON.error);    
+                        }
+                    );
+
+                    },function failure(response)  
+                    {  
+                        $("#error").empty().text(response.data.responseJSON.error);
+                    }
+                    );
+        }
+        function GetCurrentUser() 
+        {
+            var requestUri = _spPageContextInfo.webAbsoluteUrl + "/_api/web/getuserbyid(" + userid + ")";
+            var requestHeaders = { "accept" : "application/json;odata=verbose" };
+            $.ajax({
+                url : requestUri,
+                contentType : "application/json;odata=verbose",
+                headers : requestHeaders,
+                success : onSuccess,
+                error : onError
+            });
+        }
+        GetCurrentUser();
+        function onSuccess(data, request){
+            var loginName = data.d.Title;
+            $("#LoggedBy").prop('disabled', true);
+            $("#LoggedBy").val(loginName);
+        }
+
+        function onError(error) {
+            alert(error);
+        }
+
+        function onCreateContactExecute(output) {
+
+            var c = $scope.customer; 
+            var incidentTitle=$('#incidenttitle').val();
+            var dateofincident = $('#dateofincidentID').val();
+            var datereportedtoERM = $('#datereportedtoERMID').val();
+            var datereportedtoclient = $('#datereportedtoclientID').val();
+            var datereportedtoregulator = $('#datereportedtoregulatorID').val();
+            var IncomingReport = $('#IncomingReportType').val();
+            var getRegion = $("#region").find(":selected").text();
+            var getCountry = $("#country").find(":selected").text();
+            var getCity = $("#city").find(":selected").text();
+            var getLocation = $("#location").find(":selected").text();
+            var getNAVEXWLTReportable =$('#NAVEXWLTReportable').val();
+            var getIncidentType = $('#IncidentType').val();
+            var getSector =$('#Sector').val();
+            var getIncidentUpheld =$('#IncidentUpheld').val();
+            var getReportIssued =$('#ReportIssued').val();
+            var getBusinessImpactSeverity = $('#BusinessImpactSeverity').val();
+            var getTargetDateofClosure =$('#TargetDateofClosure').val();
+            var getActualDateofClosure = $('#ActualDateofClosure').val();
+            var getLastDateofInvestigation = $('#LastDateofInvestigation').val();
+            var getCaseStatus = $('#CaseStatus').find(":selected").text();
+            var getLoggedBy = $('#LoggedBy').val();
+            var today = new Date();
+            var dd = today.getDate();
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var MMM = months[today.getMonth()];
+            var yyyy = today.getFullYear();
+            if(dd<10) {
+                dd = '0'+dd
+            }
+            today = dd+MMM+yyyy;
+            var getReportNo = output+today;
+
+            var clientContext = new SP.ClientContext.get_current();
+            var web = clientContext.get_web();
+            var list = web.get_lists().getByTitle('Incidenttool');
+            var customerListItemInfo = new SP.ListItemCreationInformation();
+            var listItem = list.addItem(customerListItemInfo);
+            var ERMContact = vm.people[0].Name;
+            listItem.set_item('Title',incidentTitle);
+            listItem.set_item('Name_x0020_of_x0020_Regulator', c.nameofregulator);
+            listItem.set_item('Report_x0020_No_x002e_',output);
+            listItem.set_item('Date_x0020_of_x0020_Incident', dateofincident);
+            listItem.set_item('Date_x0020_Reported_x0020_to_x000', datereportedtoERM);
+            listItem.set_item('Date_x0020_Reported_x0020_to_x00', datereportedtoclient);
+            listItem.set_item('Date_x0020_Reported_x0020_to_x001', datereportedtoregulator);
+            listItem.set_item('Incoming_x0020_Report_x0020_Meth', IncomingReport);
+            listItem.set_item('WLTRegion', getRegion);
+            listItem.set_item('Country', getCountry);
+            listItem.set_item('City', getCity);
+            listItem.set_item('Site_x002F_Location', getLocation);
+            listItem.set_item('NAVEX_x0020__x002F__x0020_WLT_x0', getNAVEXWLTReportable);
+            listItem.set_item('Incident_x0020_Type', getIncidentType);
+            listItem.set_item('Incident_x0020_Summary', c.IncidentSummary);
+            listItem.set_item('Employee_x0020_Comments', c.EmployeeComments);
+            listItem.set_item('Client_x0020_Name_x0020__x002F__', c.ClientNameWLTOfficeName);
+            listItem.set_item('Key_x0020_Business_x0020_Contact', c.KeyBusinessContact);
+            listItem.set_item('WLTSector', getSector);
+            listItem.set_item('Contact', ERMContact);  
+            listItem.set_item('Incident_x0020_Upheld', getIncidentUpheld); 
+            listItem.set_item('Report_x0020_Issued', getReportIssued);
+            listItem.set_item('Business_x0020_Impact_x002F_Seve', getBusinessImpactSeverity);
+            listItem.set_item('Value_x0020_Incurred_x0020_to_x0', c.ValueIncurredtoDate);
+            listItem.set_item('Corrective_x0020_Actions_x0020_w', c.CorrectiveActions);
+            listItem.set_item('Target_x0020_Date_x0020_of_x0020', getTargetDateofClosure);
+            listItem.set_item('Actual_x0020_Date_x0020_of_x0020', getActualDateofClosure);  
+            listItem.set_item('Last_x0020_Date_x0020_of_x0020_I', getLastDateofInvestigation); 
+            listItem.set_item('Case_x0020_Status', getCaseStatus); 
+            listItem.set_item('Logged_x0020_By', getLoggedBy); 
+            listItem.set_item('Report_x0020_No_x002e_', getReportNo); 
+
+            listItem.update();
+                clientContext.executeQueryAsync(
+                Function.createDelegate(this, onQuerySucceeded),
+                Function.createDelegate(this, onQueryFailed)
+            );
+        }
+        onQuerySucceeded = function () {
+            alert('Successfully created new customer record');
+            window.location.replace("http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SitePages/IncidentTracker.aspx");
+        }
+        onQueryFailed = function (sender, args) {
+            alert('Failed: ' + args.get_stackTrace());
+        }
+        
+        $scope.createContact = function ($event) {
+            $("#SaveButton").prop('disabled',true);
+            var c = $scope.customer;
+            $event.preventDefault();
+            debugger;
+            $scope.generateNo('save');
+            
+        };
+        $scope.cancelContact=function($event){
+            window.location.replace("http://czchowsint1385/sites/clarity/knowledge/IncidentManagementPortal/SitePages/IncidentTracker.aspx");
+        }
+
+        //Region Change function invoke to fetch country values
+        $scope.regionChange = function () {
+            var regionVal = $('#region').find(':selected').text();;
+            $scope.getCountryItems = [];
+            $http({
+                method: 'GET',
+                url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionLookUp')/items?$select=Country&$filter=Region eq '" + regionVal + "'",
+                headers:
+                {
+                    "Accept": "application/json;odata=verbose",
+                    "Content-Type": "application/json;odata=verbose",
+                    "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                    "IF-MATCH": "*",
+                    "X-HTTP-Method": null
+                }
+            }).then(function success(response) {
+                $scope.valuesCountry = response.data.d.results;
+                //result= response.d;
+                var d = $scope.valuesCountry;
+                //array with unique objects
+                $scope.valuesCountry = [];
+                $.each(d, function (i, item) {
+
+                    if (!d[item.Country]) {
+                        d[item.Country] = true;
+                        $scope.valuesCountry.push(item);
+                        
+                    }
+                });
+            }, function failure(response) {
+                $("#error").empty().text(response.data.responseJSON.error);
+            });
+        }
+        //Country Change function invoke to fetch city values
+        $scope.countryChange = function () {
+            var countryVal = $('#country').find(':selected').text();
+            var regionVal = $('#region').find(':selected').text();
+            $scope.getCityItems = [];
+            $http({
+                method: 'GET',
+                url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionLookUp')/items?$select=City&$filter=Region eq '" + regionVal + "' and Country eq '" + countryVal + "'",
+                headers:
+                {
+                    "Accept": "application/json;odata=verbose",
+                    "Content-Type": "application/json;odata=verbose",
+                    "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                    "IF-MATCH": "*",
+                    "X-HTTP-Method": null
+                }
+            }).then(function success(response) {
+                $scope.valuesCity = response.data.d.results;
+                //result= response.d;
+                var d = $scope.valuesCity;
+                //array with unique objects
+                $scope.valuesCity = [];
+                $.each(d, function (i, item) {
+
+                    if (!d[item.City]) {
+                        d[item.City] = true;
+                        $scope.valuesCity.push(item);
+                    }
+                });
+            }, function failure(response) {
+                $("#error").empty().text(response.data.responseJSON.error);
+            });
+        }
+        //City Change function invoke to fetch location values
+        $scope.cityChange = function () {
+            var cityVal = $('#city').find(':selected').text();
+            var countryVal = $('#country').find(':selected').text();
+            var regionVal = $('#region').find(':selected').text();
+            $scope.getLocationItems = [];
+            $http({
+                method: 'GET',
+                url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('RegionLookUp')/items?$select=Location&$filter=Region eq '" + regionVal + "' and Country eq '" + countryVal + "' and City eq '" + cityVal + "'",
+                headers:
+                {
+                    "Accept": "application/json;odata=verbose",
+                    "Content-Type": "application/json;odata=verbose",
+                    "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                    "IF-MATCH": "*",
+                    "X-HTTP-Method": null
+                }
+            }).then(function success(response) {
+                $scope.valuesLocation = response.data.d.results;
+                //result= response.d;
+                var d = $scope.valuesLocation;
+                //array with unique objects
+                $scope.valuesLocation = [];
+                $.each(d, function (i, item) {
+
+                    if (!d[item.Location]) {
+                        d[item.Location] = true;
+                        $scope.valuesLocation.push(item);
+                    }
+                });
+            }, function failure(response) {
+                $("#error").empty().text(response.data.responseJSON.error);
+            });
+        }
+        
+    });
+</script>
+<head>
+<title>Document</title></head><body>
+<h2>Create incident:</h2><br /><br />
+<div ng-app="testApp">
+    <div ng-controller="mainController">
+        
+        <div class="form-group row">
+            <ng-form class="form-horizontal" role="form" name="incidentform" novalidate>
+            
+             <div class="form-group" >
+                    <label for="ReportNo" Id ="result"class="col-sm-4 control-label ng-disabled"></label>
+             </div>
+             <div class="form-group" >
+                    <label for="LoggedBy" class="col-sm-4 control-label">Logged By</label>
+                    <div class='col-sm-4'>
+                        <input type="text" class="form-control" name="LoggedBy" type="text" id='LoggedBy' / >
+                        </div>
+                </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.incidenttitle.$touched && incidentform.incidenttitle.$error.required , 'has-success': incidentform.incidenttitle.$valid }">
+                <label for="incidenttitle" class="col-sm-4 control-label">Incident Title</label>
+                <div class='col-sm-4'>
+                    <input type='text' class="form-control" name="incidenttitle" ng-model="customer.incidenttitle" type="text" id='incidenttitle' required />
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.incidenttitle.$touched && incidentform.incidenttitle.$error.required">Please enter Incident Title</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.CaseStatus.$touched && incidentform.CaseStatus.$error.required , 'has-success': incidentform.CaseStatus.$valid }">
+                <label for="CaseStatus" class="col-sm-4 control-label">Case Status</label>
+                <div class='col-sm-4'>
+                    <select id="CaseStatus" class="form-control" required>
+                        <option value="Created" disabled="disabled" selected="selected">Created</option>
+                        
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.CaseStatus.$touched && incidentform.CaseStatus.$error.required">Please select Case Status</span>
+                    </div>
+                </div>
+            </div>
+               
+            <div class="form-group" ng-class="{ 'has-error': dates_form.dateFrom.$invalid }">
+                <label for="dateofincident" class="col-sm-4 control-label">Date of Incident</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="dateofincident" class="form-control" id='dateofincidentID' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="help-block" ng-show="incidentform.dateofincident.$touched && incidentform.dateofincident.$error.required">The date is required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': dates_form.dateFrom.$invalid }">
+                <label for="datereportedtoERM" class="col-sm-4 control-label style="text-align:right">Date Reported to ERM</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="datereportedtoERM" class="form-control" id='datereportedtoERMID' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="help-block" ng-show="incidentform.datereportedtoERM.$touched && incidentform.datereportedtoERM.$error.required">The date is required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': dates_form.dateFrom.$invalid }">
+                <label for="datereportedtoclient" class="col-sm-4 control-label">Date Reported to Client (if Any)</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="datereportedtoclient" Class="form-control" id='datereportedtoclientID' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="help-block" ng-show="incidentform.datereportedtoclient.$touched && incidentform.datereportedtoclient.$error.required">The date is required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error': incidentform.datereportedtoregulator.$touched && incidentform.datereportedtoregulator.$error.required , 'has-success': incidentform.datereportedtoregulator.$valid }">
+                <label for="datereportedtoregulator" class="col-sm-4 control-label"> Date Reported to Regulator (if Any)</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="datereportedtoregulator" class="form-control" id='datereportedtoregulatorID' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="help-block" ng-show="incidentform. datereportedtoregulator.$touched && incidentform. datereportedtoregulator.$error.required">The date is required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error': incidentform.nameofregulator.$touched && incidentform.nameofregulator.$error.required , 'has-success': incidentform.datereportedtoregulator.$valid }">
+                <label for="nameofregulator" class="col-sm-4 control-label">Name of Regulator</label>
+                <div class='col-sm-4'>
+                    <input type='text' class="form-control" name="nameofregulator" ng-model="customer.nameofregulator" type="text" id='nameofregulator' required />
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.nameofregulator.$touched && incidentform.nameofregulator.$error.required">Please enter Name of Regulator</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.IncomingReportType.$touched && incidentform.IncomingReportType.$error.required , 'has-success': incidentform.IncomingReportType.$valid }">
+                <label for="IncomingReportType" class="col-sm-4 control-label">Incoming Report Method</label>
+                <div class='col-sm-4'>
+                    <select id="IncomingReportType" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">-Please select a value-</option>
+                        <option value="Email">Email</option>
+                        <option value="Call">Call</option>
+                        <option value="Direct Meet">Direct Meet</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.IncomingReportType.$touched && incidentform.IncomingReportType.$error.required">Please select Incoming Report Type</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.region.$touched && incidentform.region.$error.required , 'has-success': incidentform.region.$valid }">
+                <label for="region" class="col-sm-4 control-label">Region</label>
+                <div class='col-sm-4'>
+                    <select id="region" class="form-control" ng-model="x.Region" ng-change="regionChange()" ng-options="x.Region for x in values">
+                        <option value="" disabled="disabled" selected="selected">-Please select a value-</option>
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.region.$touched && incidentform.region.$error.required">Please select Region</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.country.$touched && incidentform.country.$error.required , 'has-success': incidentform.country.$valid }">
+                <label for="country" class="col-sm-4 control-label">Country</label>
+                <div class='col-sm-4'>
+                    <select id="country" class="form-control" ng-model="x.Country" ng-options="x.Country for x in valuesCountry" ng-disabled="!valuesCountry" ng-change="countryChange();"></select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.country.$touched && incidentform.country.$error.required">Please select Contry</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.city.$touched && incidentform.city.$error.required , 'has-success': incidentform.city.$valid }">
+                <label for="city" class="col-sm-4 control-label">City</label>
+                <div class='col-sm-4'>
+                    <select id="city" class="form-control" ng-model="x.City" ng-disabled="!valuesCity" ng-options="x.City for x in valuesCity" ng-change="cityChange();">
+                        <div class="col-sm-8">
+                            <span class="help-block" ng-show="incidentform.city.$touched && incidentform.city.$error.required">Please select City</span>
+                        </div>
+                </div>
+            </div>
+    
+            <div class="form-group" ng-class="{'has-error': incidentform.location.$touched && incidentform.location.$error.required , 'has-success': incidentform.location.$valid }">
+                <label for="location" class="col-sm-4 control-label">Location</label>
+                <div class='col-sm-4'>
+                        <select ng-model="x.Location" class="form-control" id="location" ng-disabled="!valuesLocation" ng-options="x.Location for x in valuesLocation"></select>
+                        <div class="col-sm-8">
+                            <span class="help-block" ng-show="incidentform.location.$touched && incidentform.location.$error.required">Please select Location</span>
+                        </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.location.$touched && incidentform.location.$error.required , 'has-success': incidentform.location.$valid }">
+                <label for="location" class="col-sm-4 control-label">Location</label>
+                <div class='col-sm-4'>
+                        <select ng-model="x.Location" class="form-control" id="location" ng-disabled="!valuesLocation" ng-options="x.Location for x in valuesLocation"></select>
+                        <div class="col-sm-8">
+                            <span class="help-block" ng-show="incidentform.location.$touched && incidentform.location.$error.required">Please select Location</span>
+                        </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.NAVEXWLTReportable.$touched && incidentform.NAVEXWLTReportable.$error.required , 'has-success': incidentform.NAVEXWLTReportable.$valid }">
+                <label for="NAVEXWLTReportable" class="col-sm-4 control-label">NAVEX / WLT Reportable</label>
+                <div class='col-sm-4'>
+                    <select id="NAVEXWLTReportable" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">-Please select a value-</option>
+                        <option value="NAVEX">NAVEX</option>
+                        <option value="WLT">WLT</option>
+                        <option value="Ops & Physical Security">Ops & Physical Security</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.NAVEXWLTReportable.$touched && incidentform.NAVEXWLTReportable.$error.required">Please select NAVEX / WLT Reportable</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.IncidentType.$touched && incidentform.IncidentType.$error.required , 'has-success': incidentform.IncidentType.$valid }">
+                <label for="IncidentType" class="col-sm-4 control-label">Incident Type</label>
+                <div class='col-sm-4'>
+                    <select id="IncidentType" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">-Please select a value-</option>
+                        <option value="Business Interruption">Business Interruption</option>
+                        <option value="Conflict of Interest">Conflict of Interest</option>
+                        <option value="Contractual">Contractual</option>
+                        <option value="Copyright Infringement">Copyright Infringement</option>
+                        <option value="Data Protection">Data Protection</option>
+                        <option value="Environmental">Environmental</option>
+                        <option value="Fraud">Fraud</option>
+                        <option value="Information Security">Information Security</option>
+                        <option value="Operational">Operational</option>
+                        <option value="Regulatory Compliance">Regulatory Compliance</option>
+                        <option value="Staff Conduct">Staff Conduct</option>
+                        <option value="Theft & Physical Security">Theft & Physical Security</option>
+                        <option value="Whistleblowing">Whistleblowing</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.IncidentType.$touched && incidentform.IncidentType.$error.required">Please select IncidentType</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.IncidentSummary.$touched && incidentform.IncidentSummary.$error.required , 'has-success': incidentform.IncidentSummary.$valid }">
+                <label for="IncidentSummary" class="col-sm-4 control-label">Incident Summary</label>
+                <div class='col-sm-4'>
+                    <textarea rows="5" class="form-control" name="IncidentSummary" ng-model="customer.IncidentSummary" type="text" id='IncidentSummary' required ></textarea>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.IncidentSummary.$touched && incidentform.IncidentSummary.$error.required">Please enter Incident Summary</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.EmployeeComments.$touched && incidentform.EmployeeComments.$error.required , 'has-success': incidentform.EmployeeComments.$valid }">
+                <label for="EmployeeComments" class="col-sm-4 control-label">Employee Comments</label>
+                <div class='col-sm-4'>
+                    <textarea rows="5" class="form-control" name="EmployeeComments" ng-model="customer.EmployeeComments" type="text" id='EmployeeComments' required ></textarea>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.EmployeeComments.$touched && incidentform.EmployeeComments.$error.required">Please enter Employee Comments </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.ClientNameWLTOfficeName.$touched && incidentform.ClientNameWLTOfficeName.$error.required , 'has-success': incidentform.ClientNameWLTOfficeName.$valid }">
+                <label for="ClientNameWLTOfficeName" class="col-sm-4 control-label">Client Name / WLT Office Name</label>
+                <div class='col-sm-4'>
+                    <input type="text" class="form-control" name="ClientNameWLTOfficeName" ng-model="customer.ClientNameWLTOfficeName" type="text" id='ClientNameWLTOfficeName' required />
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.ClientNameWLTOfficeName.$touched && incidentform.ClientNameWLTOfficeName.$error.required">Please enter Client Name / WLT Office Name </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.Sector.$touched && incidentform.Sector.$error.required , 'has-success': incidentform.Sector.$valid }">
+                <label for="Sector" class="col-sm-4 control-label">Sector</label>
+                <div class='col-sm-4'>
+                    <select id="Sector" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">Please select a value</option>
+                        <option value="Financial Services">Financial Services</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Support Functions">Support Functions</option>
+                        <option value="Life Sciences">Life Sciences</option>
+                        <option value="Legal & Professional">Legal & Professional</option>
+                        <option value="Public Sector">Public Sector</option>
+                        <option value="Automotive">Automotive</option>
+                        <option value="Energy & Chemical">Energy & Chemical</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.Sector.$touched && incidentform.Sector.$error.required">Please select Sector</span>
+                    </div>
+                </div>
+            </div>  
+            <div class="form-group" ng-class="{'has-error': incidentform.KeyBusinessContact.$touched && incidentform.KeyBusinessContact.$error.required , 'has-success': incidentform.KeyBusinessContact.$valid }">
+                <label for="KeyBusinessContact" class="col-sm-4 control-label">Key Business Contact</label>
+                <div class='col-sm-4'>
+                    <input type="text" class="form-control" name="KeyBusinessContact" ng-model="customer.KeyBusinessContact" type="text" id='KeyBusinessContact' required />
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.KeyBusinessContact.$touched && incidentform.KeyBusinessContact.$error.required">Please enter Key Business Contact </span>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-group" ng-class="{'has-error': incidentform.ERMContact.$touched && incidentform.ERMContact.$error.required , 'has-success': incidentform.KeyBusinessContact.$valid }">
+                <label for="ERMContact" class="col-sm-4 control-label">ERM Contact</label>
+                <div class='col-sm-4'>
+                        <sp-people-picker  name="ERMContact" id="ERMContact" ng-model="people" min-entries="1" max-entries="2" max-selected-people="3" show-login="false" show-title="true" min-characters="4" />                            
+                        <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.ERMContact.$touched && incidentform.ERMContact.$error.required">Please enter Key Business Contact </span>
+                    </div>
+                </div>
+            </div>  
+            <div class="form-group" ng-class="{'has-error': incidentform.IncidentUpheld.$touched && incidentform.IncidentUpheld.$error.required , 'has-success': incidentform.IncidentUpheld.$valid }">
+                <label for="IncidentUpheld" class="col-sm-4 control-label">Incident Upheld</label>
+                <div class='col-sm-4'>
+                    <select id="IncidentUpheld" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">Please select a value</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.IncidentUpheld.$touched && incidentform.IncidentUpheld.$error.required">Please select Incident Upheld</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.ReportIssued.$touched && incidentform.ReportIssued.$error.required , 'has-success': incidentform.ReportIssued.$valid }">
+                <label for="ReportIssued" class="col-sm-4 control-label">Report Issued</label>
+                <div class='col-sm-4'>
+                    <select id="ReportIssued" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">Please select a value</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.ReportIssued.$touched && incidentform.ReportIssued.$error.required">Please select Report Issued</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': incidentform.BusinessImpactSeverity.$touched && incidentform.BusinessImpactSeverity.$error.required , 'has-success': incidentform.BusinessImpactSeverity.$valid }">
+                <label for="BusinessImpactSeverity" class="col-sm-4 control-label">Business Impact Severity</label>
+                <div class='col-sm-4'>
+                    <select id="BusinessImpactSeverity" class="form-control" required>
+                        <option value="" disabled="disabled" selected="selected">Please select a value</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Closed">Closed</option>
+                        </select>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.BusinessImpactSeverity.$touched && incidentform.BusinessImpactSeverity.$error.required">Please select Business Impact Severity</span>
+                    </div>
+                </div>
+            </div>       
+                              
+            <div class="form-group" ng-class="{'has-error': incidentform.ValueIncurredtoDate.$touched && incidentform.ValueIncurredtoDate.$error.required , 'has-success': incidentform.ValueIncurredtoDate.$valid }">
+                <label for="ValueIncurredtoDate" class="col-sm-4 control-label">Value Incurred to Date</label>
+                <div class='col-sm-4'>
+                    <input type="text" class="form-control" name="ValueIncurredtoDate" ng-model="customer.ValueIncurredtoDate" type="text" id='ValueIncurredtoDate' required />
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.ValueIncurredtoDate.$touched && incidentform.ValueIncurredtoDate.$error.required">Please enter Value Incurred to Date</span>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-group" ng-class="{'has-error': incidentform.CorrectiveActions.$touched && incidentform.CorrectiveActions.$error.required , 'has-success': incidentform.CorrectiveActions.$valid }">
+                <label for="CorrectiveActions" class="col-sm-4 control-label">Corrective Actions with Deadlines and action Owner</label>
+                <div class='col-sm-4'>
+                    <textarea rows="5" class="form-control" name="CorrectiveActions" ng-model="customer.CorrectiveActions" type="text" id='CorrectiveActions' required ></textarea>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.CorrectiveActions.$touched && incidentform.CorrectiveActions.$error.required">Corrective Actions with Deadlines and action Owner</span>
+                    </div>
+                </div>
+            </div>     
+            <div class="form-group" ng-class="{'has-error': incidentform.TargetDateofClosure.$touched && incidentform.TargetDateofClosure.$error.required , 'has-success': incidentform.TargetDateofClosure.$valid }">
+                <label for="TargetDateofClosure" class="col-sm-4 control-label">Target Date of Closure</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="TargetDateofClosure" Class="form-control" id='TargetDateofClosure' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.TargetDateofClosure.$touched && incidentform.TargetDateofClosure.$error.required">The Date is required</span>
+                    </div>
+                </div>
+            </div>   
+            <div class="form-group" ng-class="{'has-error': incidentform.ActualDateofClosure.$touched && incidentform.ActualDateofClosure.$error.required , 'has-success': incidentform.ActualDateofClosure.$valid }">
+                <label for="ActualDateofClosure" class="col-sm-4 control-label">Actual Date of Closure</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="ActualDateofClosure" Class="form-control" id='ActualDateofClosure' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.ActualDateofClosure.$touched && incidentform.ActualDateofClosure.$error.required">The Date is required</span>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-group" ng-class="{'has-error': incidentform.LastDateofInvestigation.$touched && incidentform.LastDateofInvestigation.$error.required , 'has-success': incidentform.LastDateofInvestigation.$valid }">
+                <label for="LastDateofInvestigation" class="col-sm-4 control-label">Last Date of Investigation</label>
+                <div class='col-sm-4'>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="LastDateofInvestigation" Class="form-control" id='LastDateofInvestigation' required />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <span class="help-block" ng-show="incidentform.LastDateofInvestigation.$touched && incidentform.LastDateofInvestigation.$error.required">The Date is required</span>
+                    </div>
+                </div>
+            </div><br />
+            <div class="form-group text-center">
+                <input type="submit" class="btn btn-default" ng-click="createContact($event);" value="Create Incident" id="SaveButton" />
+                <input type="button" value="Cancel" id="CancelButton" class="btn btn-default"  ng-click="cancelContact($event);"/>
+            </div>
+            </ng-form>
+        </div> 
+    </div>
+</div> 
+    
+</body>
+</html>
