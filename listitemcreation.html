@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <input type="button" value="submit" id="submit">
+    <div id="ResultDiv"></div>
+    <script>
+        $(document).ready(function () {
+            $("#submit").on('click', function () {
+                if (SP.ClientContext != null) {
+                    SP.SOD.executeOrDelayUntilScriptLoaded(getCurrentUser, 'SP.js');
+                }
+                else {
+                    SP.SOD.executeFunc('sp.js', null, getCurrentUser);
+                }
+                function getCurrentUser() {
+                    
+                    //Summary tab
+                    //client&scope section
+                    var Customer = $("#ddlCustomer").find(":selected").text();
+                    var ContractRef = $("#txtContractRef").val();
+                    var AgreementName = $("#txtAgreementName").val();
+                    var OpportunityNo = $("#txtOpportunityNo").val();
+                    var Region = $("#ddlRegion").find(":selected").text();
+                    var Sector = $("#ddlSector").find(":selected").text();
+                    var CustomerLegalEntity = $("#txtCustomerLegalEntity").val();
+                    var WLTLegalEntity = $("#ddlWLTLegalEntity").find(":selected").text();
+                    var ContractSigned = $("#ddlContractSigned").find(":selected").text();
+                    var WLTExclusivity = $("#ddlWLTExclusivity").find(":selected").text();
+                    var CodeofConductAgreed = $("#ddlCodeofConductAgreed").find(":selected").text();
+                    var MasterContractOther = $("#ddlMasterContractOther").find(":selected").text();
+                    
+                    //term section
+                    var ContractType = $("#ddlContractType").find(":selected").text();
+                    var OriginalOperationsCommenced = $("#ddlOriginalOperationsCommenced").find(":selected").text();
+                    var StartDate = $("#dtpStartDate").val();
+                    var IntitialTerm = $("#txtIntitialTerm").val();
+                    var NoticePeriod = $("#txtNoticePeriod").val();
+                    var NextEndBreakDate = $("#dtpNextEndBreakDate").val();
+                    var ExtensionTerm = $("#txtExtensionTerm").val();
+                    var Afterenddateextensionallowed = $("#ddlAfterenddateextensionallowed").find(":selected").text();
+                    var MaxNumberofExtensions = $("#ddlMaxNumberofExtensions").find(":selected").text();
+                    var LastNoticeDate = $("#dtpLastNoticeDate").val();
+                    
+                    //Location & Key Contacts section
+                    var Country = $("#ddlCountry").find(":selected").text();
+                    var AccountManager = $("#pplAccountManager").val();
+                    var PrimarySiteFacility = $("#txtPrimarySiteFacility").val();
+                    var FinanceManager = $("#pplFinanceManager").val();
+                    var AdditionalLocations = $("#tareaAdditionalLocations").val();
+                    var ContractSiteManager = $("#pplContractSiteManager").val();
+                    var LegalServicesContact = $("#pplLegalServicesContact").val();
+                    var SummaryOtherContactsEmail = $("#tareaSummaryOtherContactsEmail").val();
+                    var SummaryComments = $("#tareaSummaryComments").val();
+                    
+                    //detail tab
+                    //Invoicing section                  
+                    var LocalCurrency = $("#ddlLocalCurrency").find(":selected").text();
+                    var InvoicingCurrency = $("#ddlInvoicingCurrency").find(":selected").text();
+                    var ChargingMechanism = $("#ddlChargingMechanism").find(":selected").text();
+                    var InvoiceFrequency = $("#ddlInvoiceFrequency").find(":selected").text();
+                    var ContractualPaymentTerms = $("#txtContractualPaymentTerms").val();
+                    var WLTlatepaymentcharge = $("#ddlWLTlatepaymentcharge").find(":selected").text();
+                    var LatePaymentInterest = $("#ddlLatePaymentInterest").find(":selected").text();
+                    var PaymentTerm = $("#txtPaymentTerm").val();
+                    
+                    //Performance (Annual) section
+                    var Revenue = $("#txtRevenue").val();
+                    var Profit = $("#txtProfit").val();
+
+                    //Commercial, Revenue & Profit section
+                    var ExpectedRevenue = $("#txtExpectedRevenue").val();
+                    var ExpectedProfit = $("#txtExpectedProfit").val();
+                    var InflationPriceChargeRecovery = $("#ddlInflationPriceChargeRecovery").find(":selected").text();
+
+                    //Liabilities section
+                    var GeneralDirectLosses = $("#ddlGeneralDirectLosses").find(":selected").text();
+                    var ProductStockDirectLosses = $("#ddlProductStockDirectLosses").find(":selected").text();
+                    var ProductStockOwner = $("#ddlProductStockOwner").find(":selected").text();
+                    var IndirectConsequentialDamages = $("#txtIndirectConsequentialDamages").val();
+                    var InsuranceRequirements = $("#ddlInsuranceRequirements").find(":selected").text();
+                    var Indemnification = $("#ddlIndemnification").find(":selected").text();
+
+                    //Service section
+                    var ServiceLines = $("#ddlServiceLines").find(":selected").text();
+                    var Obligations = $("#ddlObligations").find(":selected").text();
+                    var KPISLAFailurePenalty = $("#ddlKPISLAFailurePenalty").find(":selected").text();
+                    var WLTClientSoftware = $("#ddlWLTClientSoftware").find(":selected").text();
+
+                    //Employee section
+                    var PreemploymentScreening = $("#ddlPreemploymentScreening").find(":selected").text();
+                    var TransferringInEmployeeIndemnity = $("#ddlTransferringInEmployeeIndemnity").find(":selected").text();
+                    var RedundancyRecovery = $("#ddlRedundancyRecovery").find(":selected").text();
+                    var TransferringOutEmployeeIndemnity = $("#ddlTransferringOutEmployeeIndemnity").find(":selected").text();
+                    var RecruitementFee = $("#ddlRecruitementFee").find(":selected").text();
+
+                    //Termination section
+                    var TerminationNotification = $("#ddlTerminationNotification").find(":selected").text();
+                    var TerminationProvisions = $("#ddlTerminationProvisions").find(":selected").text();
+                    var TerminationRights = $("#ddlTerminationRights").find(":selected").text();
+                    var TerminationPenalties = $("#txtTerminationPenalties").val();
+                    var DetailComments = $("#tareaDetailComments").val();
+
+
+                    var clientContext = new SP.ClientContext.get_current();
+                    var oWeb = clientContext.get_web();
+                    var list = oWeb.get_lists().getByTitle('CDB');
+                    var newItem = new SP.ListItemCreationInformation();
+                    var listItem = list.addItem(newItem);
+                    listItem.set_item('Title', 'sample');
+                    listItem.set_item('',);
+
+                    listItem.update();
+                    clientContext.executeQueryAsync(onSuccess,onFailure);
+                    
+                }
+                function onSuccess() {
+                    $("#ResultDiv").empty();
+                    $("#ResultDiv").append('New Item created successfully');
+                    
+                }
+                function onFailure(sender, args) {
+                    alert('Failed: ' + args.get_stackTrace());
+                }
+            });
+        });
+    </script>
+    <!--script>
+        $(document).ready(function(){
+            $("#submit").on('click',function(){
+                execute();
+            });
+            function execute(){
+                $.ajax({
+                    url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('CDB')/items",  
+                    type: "POST", 
+                    body: JSON.stringify
+                    ({ 
+                        __metadata: 
+                        { 
+                            type: "SP.Data.CDBListItem" 
+                        }, 
+                        Title: 'Test1'
+                    
+                    }), 
+                    headers:  
+                    {  
+                        "Accept": "application/json;odata=verbose",  
+                        "Content-Type": "application/json;odata=verbose",  
+                        "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                        "IF-MATCH": "*"  
+                    },  
+                    cache: false,  
+                    success: function(data)   
+                    {  
+                        $("#ResultDiv").empty();  
+                        $("#ResultDiv").append("Item created successfully!!");   
+                    },  
+                    error: function(data)  
+                    {  
+                        $("#ResultDiv").empty().text(data.responseJSON.error);  
+                    }
+                });
+            }
+            
+        });
+    </script-->
+
+</body>
+
+</html>

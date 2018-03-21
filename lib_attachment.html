@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h2>Uploader</h2>
+    <div>
+        <h5>Choose files</h5>
+        <input type="file" value="+Add Files" id="AddFiles">
+        <br>
+        <h5>Enter the author</h5>
+        <input type="text" id="author">
+        <br>
+        <p></p>
+        <input type="button" value="Upload" id="Upload">
+        <p></p>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Unique id</th>
+                    <th>Author</th>
+                </tr>
+            </thead>
+            <tbody id="result">
+                
+            </tbody>
+        </table>
+    </div>
+
+    <!--script>
+        var listTitle = 'duallist1';
+        var itemId = 55;
+        var fileInput = document.getElementById("AddFiles");
+        var file = fileInput.files[0];
+        
+        function uploadFile(folderUrl,fileName,fileContent,success,error)
+        {
+            var ctx = SP.ClientContext.get_current();
+            var folder = ctx.get_web().getFolderByServerRelativeUrl(folderUrl);
+            var encContent = new SP.Base64EncodedByteArray(); 
+            for (var b = 0; b < fileContent.length; b++) {
+                encContent.append(fileContent[b]);
+            }
+            var createInfo = new SP.FileCreationInformation();
+            createInfo.set_content(encContent); 
+            createInfo.set_url(fileName);
+            folder.get_files().add(createInfo);
+            ctx.executeQueryAsync(
+                function(){
+                    console.log('Attachment file has been uploaded');  
+                }, 
+                function(sender,args){
+                    console.log(args.get_message());
+                });
+        }
+    </script-->
+    <!--script>
+        //old code
+            var getFileBuffer = function (file) {
+                    var deferred = $.Deferred();
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        deferred.resolve(e.target.result);
+                    }
+                    reader.onerror = function (e) {
+                        deferred.reject(e.target.error);
+                    }
+                    reader.readAsArrayBuffer(file);
+                    return deferred.promise();
+                };
+
+
+        getFileBuffer(file).then(function (buffer) {
+                    $.ajax({
+                        url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/getbytitle('" + listname + "')/rootfolder/files/add(FileName='" + filename + "')",
+                        method: 'POST',
+                        data: buffer,
+                        processData: false,
+                        headers: {
+                            "Accept": "application/json; odata=verbose",
+                            "content-type": "application/json; odata=verbose",
+                            "X-RequestDigest": document.getElementById("__REQUESTDIGEST").value
+                        },
+                        success: function (data) {
+                            alert("File uploaded successfully!");
+                            console.log("File uploaded successfully!");
+                        },
+                        failure: function (data) {
+                            alert("Error in uploading file!");
+                            console.log("Error" + data.responseJSON.error);
+                        }
+                    });
+                });
+    </script-->
+    <script>
+        $(document).ready(function () {
+            function guid() {
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+            }
+
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            }
+            var inputID = guid();
+            $("#Upload").click(function () {
+                var author = $("#author").val();
+                var listname = "lib_attachment";
+                var file = $("#AddFiles")[0].files[0];
+                var parts = $("#AddFiles")[0].value.split("\\");
+                var fileName = parts[parts.length - 1];
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    addItem(e.target.result, fileName);
+                }
+                reader.onerror = function (e) {
+                    alert(e.target.error);
+
+                }
+                reader.readAsArrayBuffer(file);
+
+                function addItem(buffer, fileName) {
+                    var call = uploadDocument(buffer, fileName);
+                    call.done(function (data, textStatus, jqXHR) {
+                        var call2 = getItem(data.d);
+                        call2.done(function (data, textStatus, jqXHR) {
+                            var item = data.d;
+                            var call3 = updateItemFields(item);
+                            call3.done(function (data, textStatus, jqXHR) {
+                                $("#result").append("<tr id='"+fileName+"'><td>" + fileName + "</td><td>" + inputID + "</td><td>" + author + "</td><td><input type='button' id='delete' value='Delete' onclick='deleteItem("+fileName+")'></td></tr>");
+                            });
+                            call3.fail(function (jqXHR, textStatus, errorThrown) {
+                                failHandler(jqXHR, textStatus, errorThrown);
+                            });
+                        });
+                        call2.fail(function (jqXHR, textStatus, errorThrown) {
+                            failHandler(jqXHR, textStatus, errorThrown);
+                        });
+                    });
+                    call.fail(function (jqXHR, textStatus, errorThrown) {
+                        failHandler(jqXHR, textStatus, errorThrown);
+                    });
+                }
+
+                function uploadDocument(buffer, fileName) {
+                    var url = String.format(
+                        "{0}/_api/Web/Lists/getByTitle('" + listname + "')/RootFolder/Files/Add(url='{1}', overwrite=true)",
+                        _spPageContextInfo.webAbsoluteUrl, fileName);
+                    var call = $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: buffer,
+                        processData: false,
+                        headers: {
+                            Accept: "application/json;odata=verbose",
+                            "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                            "Content-Length": buffer.byteLength
+                        }
+                    });
+
+                    return call;
+                }
+
+                function getItem(file) {
+                    var call = $.ajax({
+                        url: file.ListItemAllFields.__deferred.uri,
+                        type: "GET",
+                        dataType: "json",
+                        headers: {
+                            Accept: "application/json;odata=verbose"
+                        }
+                    });
+
+                    return call;
+                }
+
+                function updateItemFields(item) {
+                    var call = $.ajax({
+                        url: _spPageContextInfo.webAbsoluteUrl +
+                            "/_api/Web/Lists/getByTitle('" + listname + "')/Items(" +
+                            item.Id + ")",
+                        type: "POST",
+                        data: JSON.stringify({
+                            "__metadata": { type: "SP.Data.Lib_x005f_attachmentItem" },
+                            author0: author,
+                            uniqueid0: inputID
+                        }),
+                        headers: {
+                            Accept: "application/json;odata=verbose",
+                            "Content-Type": "application/json;odata=verbose",
+                            "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                            "IF-MATCH": item.__metadata.etag,
+                            "X-Http-Method": "MERGE"
+                        }
+                    });
+
+                    return call;
+                }
+
+                function failHandler(jqXHR, textStatus, errorThrown) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    var message = response ? response.error.message.value : textStatus;
+                    alert("Call failed. Error: " + message);
+                }
+                
+                function deleteItem(fileName) {
+                    $.ajax({
+                        url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/getfilebyserverrelativeurl('" + _spPageContextInfo.webServerRelativeUrl + "/" + listname + "/" + fileName + "')",
+                        type: "GET",
+                        headers: {
+                            "accept": "application/json;odata=verbose",
+                            "X-HTTP-Method": "DELETE"
+                        },
+                        success: function (data) {
+                            $("#"+fileName+"'").remove();
+                        },
+                        error: function (data) {
+                            alert(data.responseJSON.error);
+                        }
+                    });
+            }
+            });
+            
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+</head>
+<body ng-app="myApp">
+    <div>
+        <p>Choice</p>
+        <div>
+            <select name="choice" id="choice" ng-controller="myCtrl">
+                <option value="" disabled="disabled" selected="selected">-Please select a value-</option>
+                <option value="x" ng-repeat="x in values">{{x}}</option>
+            </select>
+        </div>
+    </div>
+    <div>
+        <p>Lookup</p>
+        <div>
+           <input type="button" ng-click="getItems('Chennai')">Submit</button>
+        </div>
+    </div>
+    <div id="error"></div>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope,$http) {
+            $scope.values = [];
+            $scope.getListItems=function()
+            {
+                return $http({
+                    method:'GET',
+                    url: "http://czchowsint1385/sites/clarity/Workspace4/_api/web/lists/GetByTitle('sample%20list')/fields?$filter=EntityPropertyName eq 'Case_x0020_Status'",  
+                    headers:  
+                    {  
+                        "Accept": "application/json;odata=verbose",  
+                        "Content-Type": "application/json;odata=verbose",  
+                        "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                        "IF-MATCH": "*",  
+                        "X-HTTP-Method": null  
+                    }
+                });
+            }
+            $scope.getListItems()
+                .success(function(data,status){                                              
+                    $scope.values=[];
+                    console.log(data.d.results[0].Choices.length);
+                    
+                    for (var i = 0; i < data.d.results[0].Choices.results.length; i++)   
+                        {  
+                            var item = data.d.results[0].Choices.results[i];
+                            $scope.values.push(item);  
+                        } 
+                })
+                .error(function(data,status)  
+                {  
+                    $("#error").empty().text(data.responseJSON.error);  
+                }
+            ); 
+        }); 
+        app.controller('myLookup',function($scope,$http){
+            $scope.getItems=function(value1)
+            {
+                return $http({
+                    method:'POST',
+                    url:_spPageContextInfo.webAbsoluteUrl +"/_api/Web/Lists/getByTitle('sample list')/Items(7)",  
+                    data: JSON.stringify({
+                            "__metadata": { type: "SP.Data.sample_x0020_list" },
+                            StateId: 2
+                    headers:  
+                    {  
+                        "Accept": "application/json;odata=verbose",  
+                        "Content-Type": "application/json;odata=verbose",  
+                        "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                        "IF-MATCH": "*",  
+                        "X-HTTP-Method": "PATCH"  
+                    }
+                });
+            }
+            $scope.getListItems()
+                .success(function(data,status){                                              
+                    $scope.values=[];
+                    console.log(data.d.results[0].Choices.length);
+                    
+                    for (var i = 0; i < data.d.results[0].Choices.results.length; i++)   
+                        {  
+                            var item = data.d.results[0].Choices.results[i];
+                            $scope.values.push(item);  
+                        } 
+                })
+                .error(function(data,status)  
+                {  
+                    $("#error").empty().text(data.responseJSON.error);  
+                }
+            );
+        })     
+    </script>
+</body>
+</html>

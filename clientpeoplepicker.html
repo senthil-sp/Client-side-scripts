@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AutocompletePeoplePickerJS</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>  
+    <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css"/>  
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>  
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>  
+    <script src="https://code.angularjs.org/1.3.0/angular.js"></script>  
+</head>
+<body ng-app="myApp" ng-controller="MainCtrl">  
+    <label for="tags">Assigned To: </label>  
+        <input id="Persons" ng-model="SelectedPerson"/><br/><br/>  
+        <input type="button" ng-click="AddToList()" value="Submit"/>  
+</body>
+<script type="text/javascript">  
+    var app = angular.module('myApp', []);  
+    var peoplePickerUsers =[];  
+    var AllpeoplePickerUsers =[];  
+    var CurPersonId  
+    var listName="client people picker";  
+    app.controller('MainCtrl',function($scope,$http) {  
+    $.ajax    
+            ({    
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/siteusers",  
+            type: "GET",    
+            headers:    
+            {    
+                "Accept": "application/json;odata=verbose"    
+            },    
+            success: function(data)    
+            {    
+              AllpeoplePickerUsers = data.d.results;  
+              console.log(AllpeoplePickerUsers);  
+              for (var i = 0; i < AllpeoplePickerUsers.length; i++) {    
+      
+                            var property = AllpeoplePickerUsers[i].Title;    
+                            peoplePickerUsers.push(property);  
+                        }   
+          
+                    },    
+            error: function(error)    
+            {    
+                alert(JSON.stringify(error));  
+            }    
+        });  
+      
+    $( function() {  
+        $( "#Persons" ).autocomplete({  
+          source: peoplePickerUsers  
+        });  
+      } );  
+    $scope.AddToList=function(){  
+    for(var i=0;i<AllpeoplePickerUsers.length;i++){  
+         if ($scope.SelectedPerson=== AllpeoplePickerUsers[i].Title)   
+            {  
+                CurPersonId=AllpeoplePickerUsers[i].Id;  
+            }  
+         }  
+     var datavalue = "{__metadata:{'type':'SP.Data.Client_x0020_people_x0020_pickerListItem'},Assignee:'"+CurPersonId+"'}";  
+    // alert(datavalue);  
+    $http({  
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('"+listName+"')/items",  
+            method: "POST",  
+            headers:    
+            {    
+                "Accept": "application/json;odata=verbose",   
+                "Content-Type": "application/json;odata=verbose",    
+                "X-RequestDigest": $("#__REQUESTDIGEST").val(),    
+                "X-HTTP-Method": "POST"    
+            },  
+            data: datavalue   
+                })  
+        .then(function(response) {  
+                alert("success");  
+        },   
+        function(response) {   
+                alert("failed");  
+        });  
+        }  
+    });  
+</script>  
+</html>
